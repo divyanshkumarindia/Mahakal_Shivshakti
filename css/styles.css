@@ -41,37 +41,59 @@
   --shadow-lg: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
-/* Hardware-Accelerated Smooth Page Transitions */
-@view-transition {
-  navigation: auto;
-}
-
-@keyframes smoothCrossFadeIn {
-  from {
+/* Page Transition Keyframe Animations & View Transitions */
+@keyframes pageFadeIn {
+  0% {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(15px);
   }
-  to {
+  100% {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes smoothCrossFadeOut {
-  from {
+@keyframes pageFadeOut {
+  0% {
     opacity: 1;
+    transform: translateY(0);
   }
-  to {
+  100% {
     opacity: 0;
+    transform: translateY(-15px);
   }
 }
 
-::view-transition-old(root) {
-  animation: 0.2s ease-in both smoothCrossFadeOut;
+/* Native CSS View Transition API Support */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root) {
+    animation: 0.35s cubic-bezier(0.4, 0, 0.2, 1) both pageFadeOut;
+  }
+  ::view-transition-new(root) {
+    animation: 0.35s cubic-bezier(0.4, 0, 0.2, 1) both pageFadeIn;
+  }
 }
 
-::view-transition-new(root) {
-  animation: 0.25s ease-out both smoothCrossFadeIn;
+/* Fallback Smooth Page Transition Overlay */
+.page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--clr-bg-dark);
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.35s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.25s ease;
+}
+
+.page-transition-overlay.active {
+  opacity: 1;
+  transform: scaleY(1);
+  pointer-events: all;
 }
 
 /* Reset & Basics */
