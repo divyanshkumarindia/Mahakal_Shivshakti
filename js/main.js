@@ -10,27 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
 });
 
-/* 1. Smooth Page Changing Transition (Matching mahakalcoal.co.in) */
+/* 1. Fast & Smooth Page Changing Transitions */
 function initPageTransitions() {
-  let overlay = document.querySelector('.page-transition-overlay');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.className = 'page-transition-overlay';
-    document.body.appendChild(overlay);
-  }
+  document.body.style.transition = 'opacity 0.25s ease-out';
+  document.body.style.opacity = '1';
 
-  // Fade out transition overlay on initial page load
-  window.addEventListener('pageshow', () => {
-    overlay.classList.remove('active');
-  });
-
-  // Intercept internal link clicks for smooth page wipe transition
   const links = document.querySelectorAll('a[href]');
   links.forEach(link => {
     link.addEventListener('click', (e) => {
       const targetUrl = link.getAttribute('href');
 
-      // Only transition internal HTML links (ignoring hash links or external protocols)
       if (
         targetUrl &&
         !targetUrl.startsWith('#') &&
@@ -39,21 +28,7 @@ function initPageTransitions() {
         !targetUrl.startsWith('http://') &&
         !targetUrl.startsWith('https://')
       ) {
-        e.preventDefault();
-        
-        // Trigger smooth transition overlay
-        overlay.classList.add('active');
-
-        // Use Native CSS View Transitions API if supported
-        if (document.startViewTransition) {
-          document.startViewTransition(() => {
-            window.location.href = targetUrl;
-          });
-        } else {
-          setTimeout(() => {
-            window.location.href = targetUrl;
-          }, 300);
-        }
+        document.body.style.opacity = '0';
       }
     });
   });
