@@ -74,12 +74,19 @@ function initNavigation() {
   }
 
   // Highlight active link based on current path
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+  const rawPath = window.location.pathname.split('/').pop() || '';
+  const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
   const navLinks = document.querySelectorAll('.nav-link');
   
   navLinks.forEach(link => {
     const linkPath = link.getAttribute('href');
-    if (linkPath === currentPath || (currentPath === '' && linkPath === 'index.html')) {
+    const cleanLinkPath = linkPath.replace(/^\//, '');
+    
+    if (
+      linkPath === currentPath ||
+      (currentPath === '/' && linkPath === '/') ||
+      (rawPath !== '' && (cleanLinkPath === rawPath || cleanLinkPath + '.html' === rawPath))
+    ) {
       link.classList.add('active');
     }
   });
